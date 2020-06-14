@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_newtoday/pages/homepage.dart';
 import 'package:flutter_newtoday/pages/videopage.dart';
-
+import 'package:flutter_newtoday/pages/searchbar.dart';
 void main() {
   runApp(MyApp());
 }
@@ -34,47 +34,29 @@ class AviHomePage extends StatefulWidget {
 class AviHomePagePageState extends State<AviHomePage> with TickerProviderStateMixin
 {
   int _bottomIndex= 0;
-  int _topIndex=0;
-  List _topTabs =["关注","推荐","杭州","视频"];
-  TabController _topController; 
+
+
   List<Widget> widgetPage=[Homepage(title:"home"),Videopage(),];
   void setbottomindex(int index) {
     setState(() {
       this._bottomIndex=index;
     });
   }
-  void settopndex(int index) {
-    setState(() {
-      this._topIndex=index;
-    });
-  }
-  void onTapChange()
-  {
-    setState(() {
-      this._topIndex = this._topController.index;
-    });
-  }
+
+
 
    @override
   void initState() {
 
     super.initState();
-    this._topController= TabController(initialIndex: 0,length: this._topTabs.length,vsync: this);
-    this._topController.addListener(()=>onTapChange());
+    
   } 
   @override
   Widget build(BuildContext context) {
    
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-         bottom:   TabBar(
-          controller: this._topController,
-          tabs:_topTabs.map((e) => Text(e)).toList(),
-          ),
-         
-      ),
+      appBar: SearchBar(),
       body: widgetPage[this._bottomIndex],
     bottomNavigationBar:BottomNavigationBar(
       items: <BottomNavigationBarItem>[
