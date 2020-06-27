@@ -7,6 +7,7 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.onCancel,
     this.onSearch,
+    this.top_controller,
   }) : super(key: key);
   final Widget leading;
 
@@ -18,6 +19,7 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
 
   // 点击键盘搜索回调
   final ValueChanged<String> onSearch;
+  final TabController top_controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       onSearch: onSearch,
       onCancel: onCancel,
+      top_controller:top_controller,
     );
   }
 
@@ -41,6 +44,7 @@ class _AppBar extends StatefulWidget {
     this.title,
     this.onCancel,
     this.onSearch,
+    this.top_controller,
   }) : super(key: key);
 
   // 头部组件 可选
@@ -54,9 +58,10 @@ class _AppBar extends StatefulWidget {
 
   // 点击键盘搜索回调 可选
   final ValueChanged<String> onSearch;
+  final TabController top_controller;
 
   @override
-  _AppBarState createState() => _AppBarState();
+  _AppBarState createState() => _AppBarState(topController: this.top_controller);
 }
 
 class _AppBarState extends State<_AppBar> with TickerProviderStateMixin{
@@ -65,8 +70,9 @@ class _AppBarState extends State<_AppBar> with TickerProviderStateMixin{
   bool _showSearch = false; // 显示搜索框
   int _topIndex=0;
   List _topTabs =["关注","推荐","杭州","视频"];
-  TabController _topController; 
-
+  TabController topController; 
+  _AppBarState({this.topController})
+  {}
   void settopndex(int index) {
     setState(() {
       this._topIndex=index;
@@ -75,16 +81,17 @@ class _AppBarState extends State<_AppBar> with TickerProviderStateMixin{
   void onTapChange()
   {
     setState(() {
-      this._topIndex = this._topController.index;
+      this._topIndex = this.topController.index;
     });
   }
 
   @override
   void initState() {
     // TODO: implement initState
+    
+    //this.topController= TabController(initialIndex: 0,length: this._topTabs.length,vsync: this,); 
+    //this._topController.addListener(()=>onTapChange());
     super.initState();
-    this._topController= TabController(initialIndex: 0,length: this._topTabs.length,vsync: this);
-    this._topController.addListener(()=>onTapChange());
   }
 
   @override
@@ -126,7 +133,7 @@ class _AppBarState extends State<_AppBar> with TickerProviderStateMixin{
     String _title = widget.title ?? "";
     VoidCallback _onCancel = widget.onCancel ?? () {};
     Widget _icon =
-        _title.isNotEmpty && !_showSearch ? Icon(Icons.search) : Text('取消');
+        _title.isNotEmpty && !_showSearch ? Icon(Icons.search) : Text('发布');
     return Container(
       width: 30,
       margin: EdgeInsets.only(right: 10),
@@ -154,7 +161,7 @@ class _AppBarState extends State<_AppBar> with TickerProviderStateMixin{
       title: _searchPanel(),
       actions: <Widget>[_action()],
       bottom: TabBar(
-          controller: this._topController,
+          controller: this.topController,
           tabs:_topTabs.map((e) => Text(e)).toList(),
           ),
     );

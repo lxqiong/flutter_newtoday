@@ -35,8 +35,9 @@ class AviHomePagePageState extends State<AviHomePage> with TickerProviderStateMi
 {
   int _bottomIndex= 0;
 
-
-  List<Widget> widgetPage=[Homepage(title:"home"),Videopage(),];
+  List _topTabs =["关注","推荐","杭州","视频"];
+  TabController topController; 
+  List<Widget> widgetPage=[Homepage(title:"home"),Videopage(),Videopage(),Videopage()];
   void setbottomindex(int index) {
     setState(() {
       this._bottomIndex=index;
@@ -49,15 +50,19 @@ class AviHomePagePageState extends State<AviHomePage> with TickerProviderStateMi
   void initState() {
 
     super.initState();
+    this.topController= TabController(initialIndex: 0,length: this._topTabs.length,vsync: this,); 
     
   } 
   @override
   Widget build(BuildContext context) {
-   
+    SearchBar search = SearchBar(top_controller: this.topController,);
 
     return Scaffold(
-      appBar: SearchBar(),
-      body: widgetPage[this._bottomIndex],
+      appBar: search,
+      body:TabBarView(
+        controller: this.topController,
+        children: widgetPage),
+       //widgetPage[this._bottomIndex],
     bottomNavigationBar:BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home),title:Text("主页",)),
